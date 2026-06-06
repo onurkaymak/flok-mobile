@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "uniwind-test",
-    "slug": "uniwind-test",
+    "name": "flok-mobile",
+    "slug": "flok-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "uniwindtest",
+    "scheme": "flokmobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
