@@ -1,10 +1,11 @@
-export type UserRole = 'MANAGER' | 'AUTO DETAILER' | 'CUSTOMER SERVICE AGENT';
+export type UserRole = "MANAGER" | "AUTO DETAILER" | "CUSTOMER SERVICE AGENT";
 
 export interface User {
-  userName: string;
+  name: string;
   userId: string;
   token: string;
   tokenExpTime: string;
+  isLoggedIn: boolean;
   userRole: UserRole;
 }
 
@@ -27,6 +28,8 @@ export interface RentalService {
   contactName: string;
   contactEmail: string;
   contactNum: string;
+  pickUpTime: string;
+  returnTime: string;
   reservationStart: string;
   reservationEnd: string;
   make: string;
@@ -66,7 +69,19 @@ export interface LeaderboardEntry {
   count: number;
 }
 
-export interface UiNotification {
+export interface UiNotificationResponse {
   title: string;
   message: string;
+}
+
+export interface SignInUserInfo {
+  enteredEmail: string;
+  enteredPassword: string;
+}
+
+export interface CreateUserInfo {
+  enteredName: string;
+  enteredEmail: string;
+  enteredPassword: string;
+  selectedRole: string;
 }
