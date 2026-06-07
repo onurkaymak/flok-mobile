@@ -1,19 +1,22 @@
-import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './user-slice';
-import fleetReducer from './fleet-slice';
-import rentalReducer from './rental-slice';
-import productionReducer from './production-slice';
-import uiReducer from './ui-slice';
+import { configureStore } from "@reduxjs/toolkit";
 
-export const store = configureStore({
+import userReducer from "./slices/user-slice";
+import fleetReducer from "./slices/fleet-slice";
+import rentalReducer from "./slices/rental-slice";
+import uiReducer from "./slices/ui-slice";
+import productionReducer from "./slices/production-slice";
+
+const store = configureStore({
   reducer: {
     user: userReducer,
     fleet: fleetReducer,
     rental: rentalReducer,
-    production: productionReducer,
     ui: uiReducer,
+    production: productionReducer,
   },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export default store;
