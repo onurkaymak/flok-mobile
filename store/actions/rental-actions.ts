@@ -4,6 +4,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import type { AppDispatch } from "../index";
 import type { RentalServiceResponse } from "../../types";
+import { BASE_URL } from "../../constants/api";
 
 export const fetchRentalService = (
   reservationInfo: { rentalServiceId?: number; customerEmail?: string; customerPhoneNum?: string },
@@ -12,7 +13,7 @@ export const fetchRentalService = (
   return async (dispatch: AppDispatch) => {
     const { rentalServiceId, customerEmail, customerPhoneNum } = reservationInfo;
 
-    let url = "http://localhost:5000/api/rental";
+    let url = "${BASE_URL}/api/rental";
 
     if (rentalServiceId) {
       url = `${url}?rentalServiceId=${rentalServiceId}`;
@@ -59,7 +60,7 @@ export const fetchRentalService = (
 export const fetchRentalServiceList = (token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/rental", {
+      const response = await axios.get("${BASE_URL}/api/rental", {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(rentalActions.fetchRentalServiceList(response.data as RentalServiceResponse[]));
@@ -87,7 +88,7 @@ export const addRentalService = (
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/rental",
+        "${BASE_URL}/api/rental",
         {
           vin: reservationInfo.vin,
           customerEmail: reservationInfo.customerEmail,
@@ -144,7 +145,7 @@ export const updateRentalService = (
   return async (dispatch: AppDispatch) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/rental/${rentalServiceId}`,
+        `${BASE_URL}/api/rental/${rentalServiceId}`,
         { rentalServiceId, reservationStart, reservationEnd },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -169,7 +170,7 @@ export const updateRentalService = (
 export const deleteRentalService = (rentalServiceId: number, token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      await axios.delete(`http://localhost:5000/api/rental/${rentalServiceId}`, {
+      await axios.delete(`${BASE_URL}/api/rental/${rentalServiceId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(rentalActions.delete(rentalServiceId));
