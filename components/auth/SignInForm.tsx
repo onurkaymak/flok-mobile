@@ -31,8 +31,9 @@ const SignInForm = ({ onCreateAccountButton }: Props) => {
     setLoading(true);
     await dispatch(signInUser({ enteredEmail: email, enteredPassword: password }));
     setLoading(false);
-    if (!store.getState().user.isLoggedIn) {
-      setError("Invalid email or password. Please try again.");
+    const state = store.getState();
+    if (!state.user.isLoggedIn) {
+      setError(state.ui.notification?.message ?? "Something went wrong. Please try again.");
     }
   };
 

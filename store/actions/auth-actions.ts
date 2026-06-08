@@ -50,11 +50,14 @@ export const signInUser = ({ enteredEmail, enteredPassword }: SignInUserInfo) =>
       await AsyncStorage.setItem("userData", JSON.stringify(userInfo));
 
       dispatch(userActions.login(userInfo));
-    } catch (error) {
+    } catch (error: any) {
+      const isNetworkError = !error.response;
       dispatch(
         uiActions.showNotification({
           title: "Sign In Error",
-          message: "Invalid email or password. Please try again.",
+          message: isNetworkError
+            ? "Cannot reach the server. Check your network connection."
+            : "Invalid email or password. Please try again.",
         }),
       );
     }
