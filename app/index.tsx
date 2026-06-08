@@ -1,22 +1,13 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, Redirect } from "expo-router";
 import { useAppSelector } from "../store/hooks";
 
 export default function SplashScreen() {
   const router = useRouter();
-  const { isLoggedIn, userName } = useAppSelector((state) => state.user);
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
 
   if (isLoggedIn) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-2xl font-bold text-gray-900 mb-2">
-          Welcome back, {userName}!
-        </Text>
-        <Text className="text-gray-500 text-sm text-center">
-          Tab navigation coming in the next chunk.
-        </Text>
-      </View>
-    );
+    return <Redirect href="/(tabs)" />;
   }
 
   return (
