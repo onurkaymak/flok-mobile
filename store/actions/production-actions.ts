@@ -3,11 +3,12 @@ import { uiActions } from "../slices/ui-slice";
 import axios from "axios";
 import { format } from "date-fns";
 import type { AppDispatch } from "../index";
+import { BASE_URL } from "../../constants/api";
 
 export const fetchLeaderboard = (token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/production/leaderboard", {
+      const response = await axios.get("${BASE_URL}/api/production/leaderboard", {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(productionActions.fetchLeaderboard(response.data.leaderboard));
@@ -25,7 +26,7 @@ export const fetchLeaderboard = (token: string) => {
 export const fetchDetailingServices = (token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/production", {
+      const response = await axios.get("${BASE_URL}/api/production", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -54,7 +55,7 @@ export const addDetailingService = (vin: string, detailerId: string, token: stri
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/production",
+        "${BASE_URL}/api/production",
         { vin, detailerId },
         { headers: { Authorization: `Bearer ${token}` } },
       );
