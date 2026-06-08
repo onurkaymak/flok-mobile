@@ -3,11 +3,12 @@ import axios from "axios";
 import { fleetActions } from "../slices/fleet-slice";
 import { uiActions } from "../slices/ui-slice";
 import type { Vehicle } from "../../types";
+import { BASE_URL } from "../../constants/api";
 
 export const fetchVehicles = (token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/fleet", {
+      const response = await axios.get(`${BASE_URL}/api/fleet`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(fleetActions.fetch(response.data));
@@ -26,7 +27,7 @@ export const addVehicle = (vehicleInfo: Vehicle, token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/fleet",
+        `${BASE_URL}/api/fleet`,
         {
           vin: vehicleInfo.vin,
           make: vehicleInfo.make,
@@ -72,7 +73,7 @@ export const updateVehicle = (vehicleInfo: Vehicle, token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/fleet/${vehicleInfo.vehicleId}`,
+        `${BASE_URL}/api/fleet/${vehicleInfo.vehicleId}`,
         {
           vehicleId: vehicleInfo.vehicleId,
           vin: vehicleInfo.vin,
@@ -118,7 +119,7 @@ export const updateVehicle = (vehicleInfo: Vehicle, token: string) => {
 export const deleteVehicle = (vehicleId: number, token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      await axios.delete(`http://localhost:5000/api/fleet/${vehicleId}`, {
+      await axios.delete(`${BASE_URL}/api/fleet/${vehicleId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(fleetActions.deleteVehicle(vehicleId));
