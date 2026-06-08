@@ -126,15 +126,15 @@ export default function DashboardScreen() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-900">
+    <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView contentContainerStyle={{ padding: 20 }}>
 
         {/* Header */}
         <View className="mb-6">
-          <Text className="text-4xl font-bold text-white">Dashboard</Text>
+          <Text className="text-4xl font-bold text-gray-900">Dashboard</Text>
           <Text className="text-gray-500 mt-1">
             Welcome back,{" "}
-            <Text className="font-medium text-gray-300">{userName}</Text>
+            <Text className="font-medium text-gray-700">{userName}</Text>
           </Text>
         </View>
 
@@ -157,7 +157,7 @@ export default function DashboardScreen() {
         </View>
         <View className="flex-row gap-3 mb-6">
           <StatCard
-            title="Active Reservations"
+            title="Reservations"
             value={activeReservations}
             sub="Ongoing bookings"
             iconName="calendar-outline"
@@ -173,26 +173,27 @@ export default function DashboardScreen() {
         </View>
 
         {/* Weather */}
-        <View className="bg-gray-800 rounded-xl border border-gray-700 p-5 mb-4">
-          <Text className="text-base font-semibold text-white mb-4">Weather</Text>
+        <View className="bg-gray-800 rounded-xl border border-gray-700 p-4 mb-4 flex-row items-center justify-between">
           {weatherError ? (
-            <Text className="text-sm text-gray-500">Could not fetch weather data.</Text>
+            <>
+              <Text className="text-xs font-medium text-gray-400 mb-3">Weather</Text>
+              <Text className="text-sm text-gray-500">Could not fetch weather data.</Text>
+            </>
           ) : weather ? (
-            <View>
-              <Text className="text-sm text-gray-400 mb-3">{weather.city}</Text>
-              <View className="flex-row items-center gap-4">
-                <Text style={{ fontSize: 48 }}>{weather.icon}</Text>
-                <View>
-                  <Text className="text-4xl font-bold text-white">{weather.temp}°F</Text>
-                  <Text className="text-sm text-gray-400 mt-1">{weather.description}</Text>
-                </View>
+            <>
+              <View>
+                <Text className="text-xs font-medium text-gray-400 mb-3">Weather</Text>
+                <Text className="text-3xl font-bold text-white">{weather.temp}°F</Text>
+                <Text className="text-xs text-gray-400 mt-1">{weather.description}</Text>
+                <Text className="text-xs text-gray-500 mt-0.5">{weather.city}</Text>
               </View>
-              <Text className="text-xs text-gray-600 mt-4 pt-4 border-t border-gray-700">
-                Based on your current location
-              </Text>
-            </View>
+              <Text style={{ fontSize: 44 }}>{weather.icon}</Text>
+            </>
           ) : (
-            <Text className="text-sm text-gray-500">Fetching weather...</Text>
+            <>
+              <Text className="text-xs font-medium text-gray-400 mb-3">Weather</Text>
+              <Text className="text-sm text-gray-500">Fetching weather...</Text>
+            </>
           )}
         </View>
 
@@ -213,7 +214,7 @@ export default function DashboardScreen() {
               {leaderboard.map((entry, index) => (
                 <View
                   key={entry.name}
-                  className="flex-row py-2.5 border-b border-gray-700"
+                  className="flex-row py-4 border-b border-gray-700"
                 >
                   <Text className="text-sm text-gray-500 w-10">#{index + 1}</Text>
                   <Text className="text-sm font-medium text-gray-200 flex-1">{entry.name}</Text>
