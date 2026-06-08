@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import { useAppDispatch } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { signInUser } from "../../store/actions/auth-actions";
+import store from "../../store";
 
 interface Props {
   onCreateAccountButton: () => void;
@@ -11,14 +12,28 @@ interface Props {
 const SignInForm = ({ onCreateAccountButton }: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.replace("/");
+    }
+  }, [isLoggedIn]);
 
   const formSubmitHandler = async () => {
     if (!email || !password) return;
+    setError(null);
+    setLoading(true);
     await dispatch(signInUser({ enteredEmail: email, enteredPassword: password }));
-    router.replace("/");
+    setLoading(false);
+    if (!store.getState().user.isLoggedIn) {
+      setError("Invalid email or password. Please try again.");
+    }
   };
 
   return (
@@ -71,12 +86,23 @@ const SignInForm = ({ onCreateAccountButton }: Props) => {
             />
           </View>
 
+          {error && (
+            <View className="bg-red-50 border border-red-200 rounded-md px-4 py-3">
+              <Text className="text-red-500 text-sm">{error}</Text>
+            </View>
+          )}
+
           <TouchableOpacity
             className="bg-indigo-600 rounded-md py-3 items-center mt-2"
             onPress={formSubmitHandler}
             activeOpacity={0.8}
+            disabled={loading}
           >
-            <Text className="text-white font-semibold text-sm">Sign in</Text>
+            {loading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text className="text-white font-semibold text-sm">Sign in</Text>
+            )}
           </TouchableOpacity>
 
           <View className="items-center mt-2">
