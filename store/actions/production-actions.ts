@@ -8,7 +8,7 @@ import { BASE_URL } from "../../constants/api";
 export const fetchLeaderboard = (token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get("${BASE_URL}/api/production/leaderboard", {
+      const response = await axios.get(`${BASE_URL}/api/production/leaderboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(productionActions.fetchLeaderboard(response.data.leaderboard));
@@ -26,7 +26,7 @@ export const fetchLeaderboard = (token: string) => {
 export const fetchDetailingServices = (token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get("${BASE_URL}/api/production", {
+      const response = await axios.get(`${BASE_URL}/api/production`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -36,7 +36,7 @@ export const fetchDetailingServices = (token: string) => {
         make: s.vehicle.make,
         model: s.vehicle.model,
         detailerName: s.detailer.userName,
-        createdAt: format(s.createdAt, "Pp"),
+        createdAt: format(new Date(s.createdAt), "Pp"),
       }));
 
       dispatch(productionActions.fetchDetailingServices(services));
@@ -55,7 +55,7 @@ export const addDetailingService = (vin: string, detailerId: string, token: stri
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.post(
-        "${BASE_URL}/api/production",
+        `${BASE_URL}/api/production`,
         { vin, detailerId },
         { headers: { Authorization: `Bearer ${token}` } },
       );

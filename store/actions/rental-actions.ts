@@ -13,7 +13,7 @@ export const fetchRentalService = (
   return async (dispatch: AppDispatch) => {
     const { rentalServiceId, customerEmail, customerPhoneNum } = reservationInfo;
 
-    let url = "${BASE_URL}/api/rental";
+    let url = `${BASE_URL}/api/rental`;
 
     if (rentalServiceId) {
       url = `${url}?rentalServiceId=${rentalServiceId}`;
@@ -35,8 +35,8 @@ export const fetchRentalService = (
         contactName: raw.customer.name,
         contactEmail: raw.customer.email,
         contactNum: raw.customer.phoneNum,
-        pickUpTime: format(raw.reservationStart, "Pp"),
-        returnTime: format(raw.reservationEnd, "Pp"),
+        pickUpTime: format(new Date(raw.reservationStart), "Pp"),
+        returnTime: format(new Date(raw.reservationEnd), "Pp"),
         reservationStart: raw.reservationStart,
         reservationEnd: raw.reservationEnd,
         make: raw.vehicle.make,
@@ -60,7 +60,7 @@ export const fetchRentalService = (
 export const fetchRentalServiceList = (token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get("${BASE_URL}/api/rental", {
+      const response = await axios.get(`${BASE_URL}/api/rental`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(rentalActions.fetchRentalServiceList(response.data as RentalServiceResponse[]));
@@ -88,7 +88,7 @@ export const addRentalService = (
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.post(
-        "${BASE_URL}/api/rental",
+        `${BASE_URL}/api/rental`,
         {
           vin: reservationInfo.vin,
           customerEmail: reservationInfo.customerEmail,
@@ -108,8 +108,8 @@ export const addRentalService = (
         contactName: response.data.customer.name,
         contactEmail: response.data.customer.email,
         contactNum: response.data.customer.phoneNum,
-        pickUpTime: format(raw.reservationStart, "Pp"),
-        returnTime: format(raw.reservationEnd, "Pp"),
+        pickUpTime: format(new Date(raw.reservationStart), "Pp"),
+        returnTime: format(new Date(raw.reservationEnd), "Pp"),
         reservationStart: raw.reservationStart,
         reservationEnd: raw.reservationEnd,
         make: response.data.vehicle.make,

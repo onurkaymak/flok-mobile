@@ -33,8 +33,8 @@ const rentalSlice = createSlice({
           contactName: rentalService.customer.name,
           contactEmail: rentalService.customer.email,
           contactNum: rentalService.customer.phoneNum,
-          pickUpTime: format(rentalService.reservationStart, "Pp"),
-          returnTime: format(rentalService.reservationEnd, "Pp"),
+          pickUpTime: format(new Date(rentalService.reservationStart), "Pp"),
+          returnTime: format(new Date(rentalService.reservationEnd), "Pp"),
           reservationStart: rentalService.reservationStart,
           reservationEnd: rentalService.reservationEnd,
           make: rentalService.vehicle.make,
@@ -58,14 +58,14 @@ const rentalSlice = createSlice({
       if (existing) {
         existing.reservationStart = reservationStart;
         existing.reservationEnd = reservationEnd;
-        existing.pickUpTime = format(reservationStart, "Pp");
-        existing.returnTime = format(reservationEnd, "Pp");
+        existing.pickUpTime = format(new Date(reservationStart), "Pp");
+        existing.returnTime = format(new Date(reservationEnd), "Pp");
       }
       if (state.selectedRentalService?.id === id) {
         state.selectedRentalService.reservationStart = reservationStart;
         state.selectedRentalService.reservationEnd = reservationEnd;
-        state.selectedRentalService.pickUpTime = format(reservationStart, "Pp");
-        state.selectedRentalService.returnTime = format(reservationEnd, "Pp");
+        state.selectedRentalService.pickUpTime = format(new Date(reservationStart), "Pp");
+        state.selectedRentalService.returnTime = format(new Date(reservationEnd), "Pp");
       }
     },
     resetRentalServices(state) {
