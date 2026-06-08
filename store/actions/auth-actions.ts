@@ -4,16 +4,14 @@ import type { AppDispatch } from "../index";
 import { userActions } from "../slices/user-slice";
 import { uiActions } from "../slices/ui-slice";
 import { logoutTimer, clearLogoutTimer } from "../logout-timer";
-
-// React Native difference: localStorage replaced with AsyncStorage (async, same concept)
-// logoutTimer imported from ../logout-timer instead of ../../App (no App.tsx in Expo Router)
+import { BASE_URL } from "../../constants/api";
 
 import type { User, SignInUserInfo, CreateUserInfo } from "../../types";
 
 export const createUser = ({ enteredName, enteredEmail, enteredPassword, selectedRole }: CreateUserInfo) => {
   return async (dispatch: AppDispatch) => {
     try {
-      await axios.post("http://localhost:5000/accounts/register", {
+      await axios.post(`${BASE_URL}/accounts/register`, {
         userName: enteredName,
         email: enteredEmail,
         password: enteredPassword,
@@ -35,7 +33,7 @@ export const createUser = ({ enteredName, enteredEmail, enteredPassword, selecte
 export const signInUser = ({ enteredEmail, enteredPassword }: SignInUserInfo) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.post("http://localhost:5000/accounts/signIn", {
+      const response = await axios.post(`${BASE_URL}/accounts/signIn`, {
         email: enteredEmail,
         password: enteredPassword,
       });
