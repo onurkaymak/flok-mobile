@@ -1,22 +1,21 @@
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Modal,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Modal,
-  FlatList,
-  ActivityIndicator,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { addVehicle } from "../store/actions/fleet-actions";
 import { US_STATES } from "../constants/usStates";
+import { addVehicle } from "../store/actions/fleet-actions";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import type { Vehicle } from "../types";
 
 export default function FleetAddScreen() {
@@ -34,13 +33,17 @@ export default function FleetAddScreen() {
   const [selectedState, setSelectedState] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
   const [showStatePicker, setShowStatePicker] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const inputClass = (field: string) =>
+    `w-full bg-white border rounded-md px-3.5 py-3 text-gray-900 text-sm ${
+      focusedField === field ? "border-indigo-500" : "border-gray-300"
+    }`;
+
   const formSubmitHandler = async () => {
-    if (
-      !vin || !make || !model || !color || !mileage ||
-      !vehicleClass || !classCode || !selectedState || !licensePlate
-    ) return;
+    if (!vin || !make || !model || !color || !mileage || !vehicleClass || !classCode || !selectedState || !licensePlate)
+      return;
     if (!token) return;
 
     const vehicleInfo: Vehicle = {
@@ -64,29 +67,24 @@ export default function FleetAddScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-row items-center px-5 pt-2 pb-4 border-b border-gray-200">
-        <TouchableOpacity onPress={() => router.back()} className="mr-3">
-          <Ionicons name="arrow-back" size={24} color="#111827" />
-        </TouchableOpacity>
-        <Text className="text-xl font-bold text-gray-900">Add Vehicle</Text>
-      </View>
+    <SafeAreaView className="flex-1 bg-gray-100">
+      <View className="flex-row items-center justify-between px-5 pt-2 pb-4 bg-indigo-600">
+          <View className="flex-row items-center">
+            <TouchableOpacity onPress={() => router.back()} className="mr-3">
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
+            <Text className="text-xl font-bold text-white">Add Vehicle</Text>
+          </View>
+          <Image
+            source={{ uri: "https://i.ibb.co/rcpT5Xb/flok1.png" }}
+            style={{ height: 24, width: 56 }}
+            resizeMode="contain"
+          />
+        </View>
 
-      {/*
-        KeyboardAvoidingView pushes the form up when the keyboard opens.
-        behavior="padding" works best on iOS; "height" works better on Android.
-        Platform.OS lets us check which OS we're on at runtime.
-      */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <ScrollView
-          contentContainerStyle={{ padding: 20 }}
-          keyboardShouldPersistTaps="handled"
-        >
+        <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-900 mb-2">VIN</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">VIN</Text>
             <TextInput
               value={vin}
               onChangeText={setVin}
@@ -94,72 +92,84 @@ export default function FleetAddScreen() {
               placeholderTextColor="#9ca3af"
               autoCapitalize="characters"
               autoCorrect={false}
-              className="w-full border border-gray-300 rounded-md px-3.5 py-3 text-gray-900 text-sm"
+              onFocus={() => setFocusedField("vin")}
+              onBlur={() => setFocusedField(null)}
+              className={inputClass("vin")}
             />
           </View>
 
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-900 mb-2">Make</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">Make</Text>
             <TextInput
               value={make}
               onChangeText={setMake}
               placeholder="e.g. Honda"
               placeholderTextColor="#9ca3af"
               autoCapitalize="words"
-              className="w-full border border-gray-300 rounded-md px-3.5 py-3 text-gray-900 text-sm"
+              onFocus={() => setFocusedField("make")}
+              onBlur={() => setFocusedField(null)}
+              className={inputClass("make")}
             />
           </View>
 
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-900 mb-2">Model</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">Model</Text>
             <TextInput
               value={model}
               onChangeText={setModel}
               placeholder="e.g. Civic"
               placeholderTextColor="#9ca3af"
               autoCapitalize="words"
-              className="w-full border border-gray-300 rounded-md px-3.5 py-3 text-gray-900 text-sm"
+              onFocus={() => setFocusedField("model")}
+              onBlur={() => setFocusedField(null)}
+              className={inputClass("model")}
             />
           </View>
 
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-900 mb-2">Color</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">Color</Text>
             <TextInput
               value={color}
               onChangeText={setColor}
               placeholder="e.g. White"
               placeholderTextColor="#9ca3af"
               autoCapitalize="words"
-              className="w-full border border-gray-300 rounded-md px-3.5 py-3 text-gray-900 text-sm"
+              onFocus={() => setFocusedField("color")}
+              onBlur={() => setFocusedField(null)}
+              className={inputClass("color")}
             />
           </View>
 
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-900 mb-2">Mileage</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">Mileage</Text>
             <TextInput
               value={mileage}
               onChangeText={setMileage}
               placeholder="e.g. 25000"
               placeholderTextColor="#9ca3af"
               keyboardType="numeric"
-              className="w-full border border-gray-300 rounded-md px-3.5 py-3 text-gray-900 text-sm"
+              onFocus={() => setFocusedField("mileage")}
+              onBlur={() => setFocusedField(null)}
+              className={inputClass("mileage")}
             />
           </View>
 
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-900 mb-2">Vehicle Class</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">Vehicle Class</Text>
             <TextInput
               value={vehicleClass}
               onChangeText={setVehicleClass}
               placeholder="e.g. Economy"
               placeholderTextColor="#9ca3af"
               autoCapitalize="words"
-              className="w-full border border-gray-300 rounded-md px-3.5 py-3 text-gray-900 text-sm"
+              onFocus={() => setFocusedField("vehicleClass")}
+              onBlur={() => setFocusedField(null)}
+              className={inputClass("vehicleClass")}
             />
           </View>
 
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-900 mb-2">Class Code</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">Class Code</Text>
             <TextInput
               value={classCode}
               onChangeText={setClassCode}
@@ -167,31 +177,29 @@ export default function FleetAddScreen() {
               placeholderTextColor="#9ca3af"
               autoCapitalize="characters"
               autoCorrect={false}
-              className="w-full border border-gray-300 rounded-md px-3.5 py-3 text-gray-900 text-sm"
+              onFocus={() => setFocusedField("classCode")}
+              onBlur={() => setFocusedField(null)}
+              className={inputClass("classCode")}
             />
           </View>
 
           <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-900 mb-2">State</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">State</Text>
             <TouchableOpacity
               onPress={() => setShowStatePicker(true)}
-              className="w-full border border-gray-300 rounded-md px-3.5 py-3 flex-row justify-between items-center"
+              className={`w-full bg-white border rounded-md px-3.5 py-3 flex-row justify-between items-center ${
+                showStatePicker ? "border-indigo-500" : "border-gray-300"
+              }`}
             >
-              <Text
-                className={
-                  selectedState ? "text-gray-900 text-sm" : "text-gray-400 text-sm"
-                }
-              >
-                {selectedState
-                  ? US_STATES.find((s) => s.value === selectedState)?.label
-                  : "Select a state"}
+              <Text className={selectedState ? "text-gray-900 text-sm" : "text-gray-400 text-sm"}>
+                {selectedState ? US_STATES.find((s) => s.value === selectedState)?.label : "Select a state"}
               </Text>
               <Ionicons name="chevron-down" size={16} color="#9ca3af" />
             </TouchableOpacity>
           </View>
 
           <View className="mb-6">
-            <Text className="text-sm font-medium text-gray-900 mb-2">License Plate</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-2">License Plate</Text>
             <TextInput
               value={licensePlate}
               onChangeText={setLicensePlate}
@@ -199,7 +207,9 @@ export default function FleetAddScreen() {
               placeholderTextColor="#9ca3af"
               autoCapitalize="characters"
               autoCorrect={false}
-              className="w-full border border-gray-300 rounded-md px-3.5 py-3 text-gray-900 text-sm"
+              onFocus={() => setFocusedField("licensePlate")}
+              onBlur={() => setFocusedField(null)}
+              className={inputClass("licensePlate")}
             />
           </View>
 
@@ -216,61 +226,48 @@ export default function FleetAddScreen() {
             )}
           </TouchableOpacity>
         </ScrollView>
-      </KeyboardAvoidingView>
 
-      {/*
-        Modal is a React Native component that renders content on top of everything else.
-        transparent + animationType="slide" gives us the bottom-sheet look.
-        The dark overlay is the outer View's backgroundColor (rgba with opacity).
-      */}
-      <Modal visible={showStatePicker} animationType="slide" transparent>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "flex-end",
-            backgroundColor: "rgba(0,0,0,0.5)",
-          }}
-        >
+        <Modal visible={showStatePicker} animationType="slide" transparent>
           <View
-            className="bg-white rounded-t-2xl"
-            style={{ maxHeight: "70%" }}
+            style={{
+              flex: 1,
+              justifyContent: "flex-end",
+              backgroundColor: "rgba(0,0,0,0.5)",
+            }}
           >
-            <View className="flex-row items-center justify-between px-5 py-4 border-b border-gray-200">
-              <Text className="text-base font-bold text-gray-900">
-                Select State
-              </Text>
-              <TouchableOpacity onPress={() => setShowStatePicker(false)}>
-                <Ionicons name="close" size={22} color="#6b7280" />
-              </TouchableOpacity>
-            </View>
-            <FlatList
-              data={US_STATES}
-              keyExtractor={(item) => item.value}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedState(item.value);
-                    setShowStatePicker(false);
-                  }}
-                  className={`px-5 py-3.5 border-b border-gray-100 ${
-                    selectedState === item.value ? "bg-indigo-50" : ""
-                  }`}
-                >
-                  <Text
-                    className={`text-sm ${
-                      selectedState === item.value
-                        ? "text-indigo-600 font-semibold"
-                        : "text-gray-900"
+            <View className="bg-white rounded-t-2xl" style={{ maxHeight: "70%" }}>
+              <View className="flex-row items-center justify-between px-5 py-4 border-b border-gray-200">
+                <Text className="text-base font-bold text-gray-900">Select State</Text>
+                <TouchableOpacity onPress={() => setShowStatePicker(false)}>
+                  <Ionicons name="close" size={22} color="#6b7280" />
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={US_STATES}
+                keyExtractor={(item) => item.value}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedState(item.value);
+                      setShowStatePicker(false);
+                    }}
+                    className={`px-5 py-3.5 border-b border-gray-100 ${
+                      selectedState === item.value ? "bg-indigo-50" : ""
                     }`}
                   >
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
+                    <Text
+                      className={`text-sm ${
+                        selectedState === item.value ? "text-indigo-600 font-semibold" : "text-gray-900"
+                      }`}
+                    >
+                      {item.label}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
     </SafeAreaView>
   );
 }
