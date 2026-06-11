@@ -79,7 +79,7 @@ export default function FleetAddScreen() {
       */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
+        style={{ flex: 1 }}
       >
         <ScrollView
           contentContainerStyle={{ padding: 20 }}
