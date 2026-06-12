@@ -115,6 +115,8 @@ export default function RentalAddScreen() {
                 value={date}
                 mode="date"
                 display="spinner"
+                textColor="#111827"
+                style={{ height: 216 }}
                 onChange={(_, selected) => {
                   if (selected) onChange(selected);
                 }}
