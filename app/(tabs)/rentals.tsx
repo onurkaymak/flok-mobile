@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useCallback } from "react";
 import { View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchRentalServiceList, deleteRentalService } from "../../store/actions/rental-actions";
@@ -20,13 +20,15 @@ export default function RentalsScreen() {
   const isManager = userRole === "MANAGER";
   const selectedRental = rentalServices.find((r) => r.id === selectedById?.[0]) ?? null;
 
-  useEffect(() => {
-    dispatch(rentalActions.resetRentalServices());
-    if (token) dispatch(fetchRentalServiceList(token));
-    return () => {
-      dispatch(rentalActions.setSelectedRentalService([]));
-    };
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(rentalActions.resetRentalServices());
+      if (token) dispatch(fetchRentalServiceList(token));
+      return () => {
+        dispatch(rentalActions.setSelectedRentalService([]));
+      };
+    }, [token]),
+  );
 
   const handleSelect = (id: number) => {
     if (selectedById?.[0] === id) {

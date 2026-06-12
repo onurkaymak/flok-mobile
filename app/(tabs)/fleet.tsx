@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useCallback } from "react";
 import { View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
@@ -22,13 +22,15 @@ export default function FleetScreen() {
 
   const selectedVehicle = vehicles.find((v) => v.vehicleId === selectedVehicles[0]) ?? null;
 
-  useEffect(() => {
-    dispatch(resetVehiclesList());
-    if (token) dispatch(fetchVehicles(token));
-    return () => {
-      dispatch(setSelectedVehicles([]));
-    };
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(resetVehiclesList());
+      if (token) dispatch(fetchVehicles(token));
+      return () => {
+        dispatch(setSelectedVehicles([]));
+      };
+    }, [token]),
+  );
 
   const handleSelect = (vehicleId: number) => {
     if (selectedVehicles[0] === vehicleId) {
