@@ -18,6 +18,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addRentalService } from "../store/actions/rental-actions";
 
+const applyDate = (base: Date, newDate: Date): Date => {
+  const d = new Date(base);
+  d.setFullYear(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
+  return d;
+};
+
+const applyTime = (base: Date, newTime: Date): Date => {
+  const d = new Date(base);
+  d.setHours(newTime.getHours(), newTime.getMinutes(), 0, 0);
+  return d;
+};
+
 export default function RentalAddScreen() {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -28,8 +40,10 @@ export default function RentalAddScreen() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -40,7 +54,6 @@ export default function RentalAddScreen() {
 
   const formSubmitHandler = async () => {
     if (!vin || !customerEmail || !token || !userId) return;
-
     setLoading(true);
     await dispatch(
       addRentalService(
@@ -73,14 +86,14 @@ export default function RentalAddScreen() {
     onClose: () => void;
     onChange: (date: Date) => void;
   }) => (
-    <View className="mb-4">
+    <View className="flex-1">
       <Text className="text-sm font-medium text-gray-700 mb-2">{label}</Text>
       <TouchableOpacity
         onPress={onOpen}
-        className="w-full bg-white border border-gray-300 rounded-md px-3.5 py-3 flex-row justify-between items-center"
+        className="bg-white border border-gray-300 rounded-md px-3 py-3 flex-row justify-between items-center"
       >
-        <Text className="text-gray-900 text-sm">{format(date, "PPP")}</Text>
-        <Ionicons name="calendar-outline" size={16} color="#9ca3af" />
+        <Text className="text-gray-900 text-sm">{format(date, "MMM d, yyyy")}</Text>
+        <Ionicons name="calendar-outline" size={14} color="#9ca3af" />
       </TouchableOpacity>
 
       {Platform.OS === "android" && showPicker && (
@@ -97,13 +110,7 @@ export default function RentalAddScreen() {
 
       {Platform.OS === "ios" && (
         <Modal visible={showPicker} animationType="slide" transparent>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              backgroundColor: "rgba(0,0,0,0.5)",
-            }}
-          >
+          <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" }}>
             <View className="bg-white rounded-t-2xl">
               <View className="flex-row items-center justify-between px-5 py-4 border-b border-gray-200">
                 <Text className="text-base font-bold text-gray-900">{label}</Text>
@@ -114,6 +121,70 @@ export default function RentalAddScreen() {
               <DateTimePicker
                 value={date}
                 mode="date"
+                display="spinner"
+                textColor="#111827"
+                style={{ height: 216 }}
+                onChange={(_, selected) => {
+                  if (selected) onChange(selected);
+                }}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
+    </View>
+  );
+
+  const TimePickerField = ({
+    label,
+    date,
+    showPicker,
+    onOpen,
+    onClose,
+    onChange,
+  }: {
+    label: string;
+    date: Date;
+    showPicker: boolean;
+    onOpen: () => void;
+    onClose: () => void;
+    onChange: (date: Date) => void;
+  }) => (
+    <View className="flex-1">
+      <Text className="text-sm font-medium text-gray-700 mb-2">{label}</Text>
+      <TouchableOpacity
+        onPress={onOpen}
+        className="bg-white border border-gray-300 rounded-md px-3 py-3 flex-row justify-between items-center"
+      >
+        <Text className="text-gray-900 text-sm">{format(date, "p")}</Text>
+        <Ionicons name="time-outline" size={14} color="#9ca3af" />
+      </TouchableOpacity>
+
+      {Platform.OS === "android" && showPicker && (
+        <DateTimePicker
+          value={date}
+          mode="time"
+          display="default"
+          onChange={(_, selected) => {
+            onClose();
+            if (selected) onChange(selected);
+          }}
+        />
+      )}
+
+      {Platform.OS === "ios" && (
+        <Modal visible={showPicker} animationType="slide" transparent>
+          <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" }}>
+            <View className="bg-white rounded-t-2xl">
+              <View className="flex-row items-center justify-between px-5 py-4 border-b border-gray-200">
+                <Text className="text-base font-bold text-gray-900">{label}</Text>
+                <TouchableOpacity onPress={onClose}>
+                  <Text className="text-indigo-600 font-semibold text-sm">Done</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={date}
+                mode="time"
                 display="spinner"
                 textColor="#111827"
                 style={{ height: 216 }}
@@ -179,27 +250,47 @@ export default function RentalAddScreen() {
           />
         </View>
 
-        <DatePickerField
-          label="Pick Up Date"
-          date={startDate}
-          showPicker={showStartPicker}
-          onOpen={() => setShowStartPicker(true)}
-          onClose={() => setShowStartPicker(false)}
-          onChange={setStartDate}
-        />
+        <View className="flex-row gap-3 mb-4">
+          <DatePickerField
+            label="Pick Up Date"
+            date={startDate}
+            showPicker={showStartDatePicker}
+            onOpen={() => setShowStartDatePicker(true)}
+            onClose={() => setShowStartDatePicker(false)}
+            onChange={(d) => setStartDate(applyDate(startDate, d))}
+          />
+          <TimePickerField
+            label="Pick Up Time"
+            date={startDate}
+            showPicker={showStartTimePicker}
+            onOpen={() => setShowStartTimePicker(true)}
+            onClose={() => setShowStartTimePicker(false)}
+            onChange={(d) => setStartDate(applyTime(startDate, d))}
+          />
+        </View>
 
-        <DatePickerField
-          label="Return Date"
-          date={endDate}
-          showPicker={showEndPicker}
-          onOpen={() => setShowEndPicker(true)}
-          onClose={() => setShowEndPicker(false)}
-          onChange={setEndDate}
-        />
+        <View className="flex-row gap-3 mb-6">
+          <DatePickerField
+            label="Return Date"
+            date={endDate}
+            showPicker={showEndDatePicker}
+            onOpen={() => setShowEndDatePicker(true)}
+            onClose={() => setShowEndDatePicker(false)}
+            onChange={(d) => setEndDate(applyDate(endDate, d))}
+          />
+          <TimePickerField
+            label="Return Time"
+            date={endDate}
+            showPicker={showEndTimePicker}
+            onOpen={() => setShowEndTimePicker(true)}
+            onClose={() => setShowEndTimePicker(false)}
+            onChange={(d) => setEndDate(applyTime(endDate, d))}
+          />
+        </View>
 
         <TouchableOpacity
           onPress={formSubmitHandler}
-          className="bg-indigo-600 rounded-md py-3 items-center mt-2"
+          className="bg-indigo-600 rounded-md py-3 items-center"
           disabled={loading}
           activeOpacity={0.8}
         >
