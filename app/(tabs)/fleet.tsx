@@ -26,9 +26,6 @@ export default function FleetScreen() {
     useCallback(() => {
       dispatch(resetVehiclesList());
       if (token) dispatch(fetchVehicles(token));
-      return () => {
-        dispatch(setSelectedVehicles([]));
-      };
     }, [token]),
   );
 

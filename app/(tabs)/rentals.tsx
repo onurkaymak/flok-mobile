@@ -24,9 +24,6 @@ export default function RentalsScreen() {
     useCallback(() => {
       dispatch(rentalActions.resetRentalServices());
       if (token) dispatch(fetchRentalServiceList(token));
-      return () => {
-        dispatch(rentalActions.setSelectedRentalService([]));
-      };
     }, [token]),
   );
 
